@@ -1,14 +1,16 @@
+import os
 import streamlit as st
 import google.generativeai as genai
+from dotenv import load_dotenv
 
-# Setup Gemini API
-genai.configure(api_key="your-gemini-api-key")
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-pro")
 
 st.set_page_config(page_title="Gemini Chatbot", layout="centered")
 st.title("Gemini Chatbot")
 
-# Initialize chat history
+# chat history
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
