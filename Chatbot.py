@@ -21,10 +21,10 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
-# Start chat session WITHOUT system role (Gemini 1.5 does not support it)
+
 chat = model.start_chat()
 
-# Inject system-style instruction as first message from the "user"
+
 chat.send_message(
     "You are a helpful and professional AI chatbot for the company 'DSN Jos'. "
     "You assist users by answering questions, providing information, and representing the values and mission of DSN Jos. "
