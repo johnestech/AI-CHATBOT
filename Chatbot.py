@@ -2,23 +2,34 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Load Gemini Pro model with a predefined system message
-model = genai.GenerativeModel("gemini-pro")
+# Set generation configuration
+generation_config = {
+    "temperature": 1,
+    "top_p": 0.92,
+    "top_k": 64,
+    "max_output_tokens": 8192,
+    "response_mime_type": "text/plain",
+}
 
-# Create a chat session with context
-chat = model.start_chat(history=[
-    {
-        "role": "system",
-        "parts": [
-            "You are a helpful and professional AI chatbot for the company 'DSN Jos'. "
-            "You assist users by answering questions, providing information, and representing the values and mission of DSN Jos. "
-            "Always be friendly, knowledgeable, and professional in your responses."
-        ]
-    }
-])
+# Initialize model
+model = genai.GenerativeModel(
+    model_name="gemini-2.0-flash",
+    generation_config=generation_config,
+)
+
+# Start chat session WITHOUT system role (Gemini 1.5 does not support it)
+chat = model.start_chat()
+
+# Inject system-style instruction as first message from the "user"
+chat.send_message(
+    "You are a helpful and professional AI chatbot for the company 'DSN Jos'. "
+    "You assist users by answering questions, providing information, and representing the values and mission of DSN Jos. "
+    "Always be friendly, knowledgeable, and professional in your responses."
+)
 
 def chat_with_gemini():
     print("Gemini AI Chatbot for DSN Jos. Type 'exit' to quit.")
@@ -33,4 +44,7 @@ def chat_with_gemini():
             print("Error:", e)
 
 if __name__ == "__main__":
-    chat_with_gemini()
+    try:
+        chat_with_gemini()
+    except KeyboardInterrupt:
+        print("\nGoodbye!")
